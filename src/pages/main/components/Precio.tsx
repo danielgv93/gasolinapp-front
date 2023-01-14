@@ -6,7 +6,6 @@ export const Precio = () => {
     const {provincia, setPrecio, combustible} = useStore();
 
     useEffect(() => {
-        console.log('Precio.tsx useEffect')
         getPrecioByProvProd(provincia.id, combustible.id).then(res => {
             if (!res.precio) {
                 return;
