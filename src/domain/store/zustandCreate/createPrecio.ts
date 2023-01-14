@@ -5,7 +5,7 @@ export interface PrecioState {
     setPrecio: (combustible: number) => void
 }
 
-const createPrecio: StoreSlice<PrecioState> = (set) => ({
+export const createPrecio: StoreSlice<PrecioState> = (set) => ({
     precio: 0,
     setPrecio: (precio: number) => set({precio})
 })

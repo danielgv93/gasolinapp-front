@@ -15,3 +15,4 @@ export const Precio = () => {
     }, [provincia.nombre, combustible])
     return null;
 }
+export default Precio

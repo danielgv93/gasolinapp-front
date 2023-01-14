@@ -5,7 +5,7 @@ export interface KilometrosState {
     setKilometros: (kilometros: number) => void
 }
 
-const createKilometros: StoreSlice<KilometrosState> = (set) => ({
+export const createKilometros: StoreSlice<KilometrosState> = (set) => ({
     kilometros: 25,
     setKilometros: (kilometros: number) => set({kilometros})
 })

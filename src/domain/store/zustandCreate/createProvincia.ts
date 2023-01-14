@@ -6,7 +6,7 @@ export interface ProvinciaState {
     setProvincia: (provincia: Provincia) => void
 }
 
-const createProvincia: StoreSlice<ProvinciaState> = (set) => ({
+export const createProvincia: StoreSlice<ProvinciaState> = (set) => ({
     provincia: {
         id: 0,
         nombre: ""

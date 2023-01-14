@@ -1,8 +1,7 @@
 import {Select} from "@mantine/core";
-import {useEffect} from "react";
 import {Combustible} from "../../../domain/models/Combustible.model";
 import useStore from "../../../domain/store/useStore";
-import {getLocalStorage, selectOnChange} from "../../../domain/utils";
+import {selectOnChange} from "../../../domain/utils";
 
 export const CombustibleSelector = () => {
     const {combustible, setCombustible} = useStore();
@@ -20,9 +19,6 @@ export const CombustibleSelector = () => {
             nombre: 'Diesel'
         }
     ]
-    useEffect(() => {
-      getLocalStorage(setCombustible, 'combustible')
-    }, [])
 
     const combustiblesMap = (combustible: Combustible) => ({
         value: combustible.id.toString(),

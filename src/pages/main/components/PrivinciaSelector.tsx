@@ -4,10 +4,10 @@ import {useInputState} from "@mantine/hooks";
 import {Provincia} from "../../../domain/models/Provincia.model";
 import {fetchAllProvincias} from "../../../domain/services";
 import useStore from "../../../domain/store/useStore";
-import {selectOnChange, getLocalStorage} from "../../../domain/utils";
+import {selectOnChange} from "../../../domain/utils";
 
 
-const PrivinciaSelector = () => {
+export const PrivinciaSelector = () => {
     const {provincia, setProvincia} = useStore();
     const [provincias, setProvincias] = useInputState<Provincia[]>([]);
 
@@ -18,7 +18,6 @@ const PrivinciaSelector = () => {
         fetchAllProvincias().then((provincias) => {
             setProvincias(provincias);
         })
-        getLocalStorage(setProvincia, 'provincia');
     }, [])
 
 

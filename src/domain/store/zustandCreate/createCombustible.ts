@@ -6,7 +6,7 @@ export interface CombustibleState {
     setCombustible: (combustible: Combustible) => void
 }
 
-const createCombustible: StoreSlice<CombustibleState> = (set) => ({
+export const createCombustible: StoreSlice<CombustibleState> = (set) => ({
     combustible: {
         id: 0,
         nombre: ''
