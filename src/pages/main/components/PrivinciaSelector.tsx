@@ -1,9 +1,9 @@
 import {Select} from "@mantine/core";
 import React, {useEffect} from "react";
-import {fetchAllProvincias, getPrecioByProvProd} from "../domain/services";
-import useStore from "../domain/store/useStore";
-import {Provincia} from "../domain/models/Provincia.model";
 import {useInputState} from "@mantine/hooks";
+import {Provincia} from "../../../domain/models/Provincia.model";
+import {fetchAllProvincias, getPrecioByProvProd} from "../../../domain/services";
+import useStore from "../../../domain/store/useStore";
 
 const PrivinciaSelector = () => {
     const {provincia, setProvincia, setPrecio} = useStore();
@@ -19,13 +19,11 @@ const PrivinciaSelector = () => {
     }, [])
 
     useEffect(() => {
-        getPrecioByProvProd(provincia.id, 1).then(res => {
+        getPrecioByProvProd(provincia.id, 3).then(res => {
             setPrecio(res.precio)
         })
     }, [provincia.nombre])
-    if (provincias.length === 0) {
-        return <div>Loading...</div>
-    }
+
     return (
     <Select
         label="Provincia"

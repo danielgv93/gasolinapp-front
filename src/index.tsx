@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-      <MantineProvider withGlobalStyles withNormalizeCSS>
+      <MantineProvider theme={{ loader: 'bars' }} withGlobalStyles withNormalizeCSS>
           <App />
       </MantineProvider>
   </React.StrictMode>

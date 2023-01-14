@@ -1,5 +1,5 @@
-import StoreSlice from "./storeSlice";
 import {Provincia} from "../../models/Provincia.model";
+import StoreSlice from "./storeSlice";
 
 export interface ProvinciaState {
     provincia: Provincia
