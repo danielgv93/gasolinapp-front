@@ -3,5 +3,5 @@ export interface Combustible {
     nombre: CombustibleType;
 }
 
-export const Combustibles = ['Gasolina95', 'Gasolina98', 'Diesel']
-export type CombustibleType = typeof Combustibles[number]
+export const CombustibleNames = ['Gasolina95', 'Gasolina98', 'Diesel']
+export type CombustibleType = typeof CombustibleNames[number]

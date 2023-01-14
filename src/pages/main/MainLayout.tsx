@@ -3,6 +3,8 @@ import React, {useState} from "react";
 import {Container} from "../../components";
 import useStore from "../../domain/store/useStore";
 import {fixedNumber} from "../../domain/utils";
+import {Precio} from "./components";
+import CombustibleSelector from "./components/CombustibleSelector";
 import PrivinciaSelector from "./components/PrivinciaSelector";
 
 export const MainLayout = () => {
@@ -12,8 +14,10 @@ export const MainLayout = () => {
 
     return (
         <Container>
+            <Precio />
             <div className={'flex flex-row w-full justify-center gap-8'}>
                 <PrivinciaSelector />
+                <CombustibleSelector />
                 <div className={'flex flex-row items-end gap-2'}>
                     <span className={'text-2xl'}>{fixedNumber(precio)}</span>
                     <span className={'text-sm'}>€/L</span>

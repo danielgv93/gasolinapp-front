@@ -9,7 +9,7 @@ export interface CombustibleState {
 const createCombustible: StoreSlice<CombustibleState> = (set) => ({
     combustible: {
         id: 0,
-        nombre: 'Gasolina95'
+        nombre: ''
     },
     setCombustible: (combustible: Combustible) => set({combustible})
 })

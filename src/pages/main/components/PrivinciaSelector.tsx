@@ -2,11 +2,13 @@ import {Select} from "@mantine/core";
 import React, {useEffect} from "react";
 import {useInputState} from "@mantine/hooks";
 import {Provincia} from "../../../domain/models/Provincia.model";
-import {fetchAllProvincias, getPrecioByProvProd} from "../../../domain/services";
+import {fetchAllProvincias} from "../../../domain/services";
 import useStore from "../../../domain/store/useStore";
+import {selectOnChange, getLocalStorage} from "../../../domain/utils";
+
 
 const PrivinciaSelector = () => {
-    const {provincia, setProvincia, setPrecio} = useStore();
+    const {provincia, setProvincia} = useStore();
     const [provincias, setProvincias] = useInputState<Provincia[]>([]);
 
     useEffect(() => {
@@ -16,30 +18,18 @@ const PrivinciaSelector = () => {
         fetchAllProvincias().then((provincias) => {
             setProvincias(provincias);
         })
+        getLocalStorage(setProvincia, 'provincia');
     }, [])
 
-    useEffect(() => {
-        getPrecioByProvProd(provincia.id, 3).then(res => {
-            setPrecio(res.precio)
-        })
-    }, [provincia.nombre])
 
     return (
     <Select
         label="Provincia"
         searchable
         placeholder="Selecciona una provincia"
+        value={provincia.id.toString() ?? ''}
         data={provincias.map(provinciasMap)}
-        onChange={(value) => {
-            if (value === null) {
-                return;
-            }
-            const element = provincias.find(el => el.id.toString() === value)
-            if (!element) {
-                return;
-            }
-            setProvincia(element)
-        }}
+        onChange={(value) => selectOnChange(value, provincias, setProvincia)}
     />
     )
 }

@@ -1,4 +1,5 @@
 import {create, GetState, SetState} from "zustand";
+import {devtools, persist} from "zustand/middleware";
 import createProvincia, {ProvinciaState} from "./zustandCreate/createProvincia";
 import createCombustible, {CombustibleState} from "./zustandCreate/createCombustible";
 import createPrecio, {PrecioState} from "./zustandCreate/createPrecio";
@@ -12,6 +13,8 @@ const createRootSlice = (set: SetState<any>, get: GetState<any>) => ({
     ...createPrecio(set, get)
 })
 
-export const useStore = create<RootState>(createRootSlice)
+export const useStore = create<RootState>()(devtools(persist(createRootSlice, {
+    name: 'gasolinapp',
+})))
 export default useStore;
 
