@@ -27,6 +27,7 @@ export const ConsumoSelector = () => {
             <Slider
                 label={(val) => <Text>{`${val.toFixed(1)} L/100Km`}</Text>}
                 className={'w-full'}
+                color={'green'}
                 min={0}
                 max={Math.max(10, (consumo + 1))}
                 step={0.1}

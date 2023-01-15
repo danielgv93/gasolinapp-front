@@ -1,5 +1,6 @@
-import {Box, NumberInput, Slider, Text} from "@mantine/core";
+import {Box, NumberInput, Slider} from "@mantine/core";
 import {useInputState} from "@mantine/hooks";
+import {Text} from "../../../components/Text";
 import useStore from "../../../domain/store/useStore";
 
 export const KilometrosSelector = () => {
@@ -11,7 +12,7 @@ export const KilometrosSelector = () => {
                 label={'Kilometros'}
                 value={kilometros}
                 min={0}
-                icon={<Text>Km</Text>}
+                icon={<Text className={'text-gray-500 text-sm'}>Km</Text>}
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 onChange={(val) => {
@@ -23,7 +24,8 @@ export const KilometrosSelector = () => {
                 }
             />
             <Slider
-                label={(val) => <Text>{`${val} Kilometros`}</Text>}
+                label={(val) => `${val} Kilometros`}
+                color={'green'}
                 className={'w-full'}
                 min={0}
                 max={Math.max(100, (kilometros + 100))}

@@ -1,8 +1,9 @@
 import {BanknotesIcon} from "@heroicons/react/24/outline";
-import {Card, Divider, HoverCard, Image, Text, Title} from "@mantine/core";
+import {Card, Divider, HoverCard, Image, Title} from "@mantine/core";
 import React from "react";
 import {Container} from "../../components";
 import {GasIcon} from "../../components/icons/GasIcon";
+import {Text} from "../../components/Text";
 import useStore from "../../domain/store/useStore";
 import {fixedNumber} from "../../domain/utils";
 import {RequestPrecio, KilometrosSelector, CombustibleSelector, PrivinciaSelector, ConsumoSelector} from "./components";
@@ -24,8 +25,8 @@ export const MainLayout = () => {
                         <HoverCard withArrow closeDelay={0} position={'top'} >
                             <HoverCard.Target>
                                 <div className={'w-full flex items-center justify-center rounded-md hover:bg-blue-50 hover:shadow cursor-pointer transition-all p-6'}>
-                                    <GasIcon className={'h-6 w-6 text-gray-600 mr-4'}/>
-                                    <span className={'text-2xl transition-all'}>{fixedNumber(precio)} €/L</span>
+                                    <GasIcon className={'h-6 w-6 text-font mr-4'}/>
+                                    <Text className={'text-2xl transition-all'}>{fixedNumber(precio)} €/L</Text>
                                 </div>
                             </HoverCard.Target>
                             <HoverCard.Dropdown>
@@ -38,8 +39,8 @@ export const MainLayout = () => {
                         <HoverCard withArrow closeDelay={0} position={'top'} >
                             <HoverCard.Target>
                                 <div className={'w-full flex items-center justify-center rounded-md hover:bg-blue-50 hover:shadow cursor-pointer transition-all p-6'}>
-                                    <BanknotesIcon className={'h-6 w-6 text-gray-600 mr-4'}/>
-                                    <span className={'text-2xl transition-all'}>{fixedNumber(precio * kilometros / 100 * consumo)} €</span>
+                                    <BanknotesIcon className={'h-6 w-6 text-font mr-4'}/>
+                                    <Text className={'text-2xl transition-all'}>{fixedNumber(precio * kilometros / 100 * consumo)} €</Text>
                                 </div>
                             </HoverCard.Target>
                             <HoverCard.Dropdown>

@@ -16,6 +16,20 @@ root.render(
           theme={{
               loader: 'bars',
               fontFamily: 'Roboto, sans-serif',
+              colors: {
+                  green: [
+                      "",
+                      '#b5ffd0',
+                      '#8aff9a',
+                      '#60ff65',
+                      '#3eff31',
+                      '#049d52',
+                      '#00754d',
+                      '#005439',
+                      '#003828',
+                      '#001c14'
+                  ]
+              }
           }}
           withGlobalStyles
           withNormalizeCSS>
