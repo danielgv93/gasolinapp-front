@@ -1,5 +1,5 @@
 import {BanknotesIcon} from "@heroicons/react/24/outline";
-import {Card, Divider, HoverCard, Text, Title} from "@mantine/core";
+import {Card, Divider, HoverCard, Image, Text, Title} from "@mantine/core";
 import React from "react";
 import {Container} from "../../components";
 import {GasIcon} from "../../components/icons/GasIcon";
@@ -15,8 +15,9 @@ export const MainLayout = () => {
         <Container >
             <RequestPrecio />
             <div className={'flex flex-col gap-20 p-20 pb-32 lg:px-40 px-10'}>
-                <div className={'flex justify-center'}>
-                    <Title className={"font-['Montserrat, sans-serif'] tracking-widest"}>GASOLINAPP</Title>
+                <div className={'flex sm:flex-row flex-col items-center sm:justify-center'}>
+                    <Image src={`${process.env.PUBLIC_URL}/logo.png`} width={50} height={50} />
+                    <Title className={"font-['Montserrat, sans-serif'] text-[#32353b] tracking-widest italic"}>GASOLINAPP</Title>
                 </div>
                 <div className={'grid md:grid-cols-2 grid-cols-1 grid-flow-row lg:gap-x-20 gap-6'}>
                     <div className={'md:col-span-2 grid md:grid-cols-2 p-4 rounded-lg bg-white lg:gap-x-20 gap-6 '}>
@@ -50,13 +51,13 @@ export const MainLayout = () => {
                         </HoverCard>
                     </div>
                     <Card radius={"md"} p={'xl'}>
-                        <Title className={'text-2xl'}>Combustible</Title>
+                        <Text className={'text-2xl font-bold'}>Combustible</Text>
                         <Divider />
                         <PrivinciaSelector />
                         <CombustibleSelector />
                     </Card>
                     <Card radius={"md"} p={'xl'}>
-                        <Title className={'text-2xl'}>Datos</Title>
+                        <Text className={'text-2xl font-bold'}>Datos</Text>
                         <Divider />
                         <KilometrosSelector />
                         <ConsumoSelector />
