@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import {SWRConfig} from "swr";
+import {fetcher} from "./domain/swr/fetcher";
 import App from './pages/App';
 import reportWebVitals from './reportWebVitals';
 import {MantineProvider} from "@mantine/core";
@@ -14,13 +16,14 @@ root.render(
           theme={{
               loader: 'bars',
               fontFamily: 'Roboto, sans-serif',
-              colors: {
-
-              }
           }}
           withGlobalStyles
           withNormalizeCSS>
-          <App />
+          <SWRConfig
+              value={{ fetcher }}
+          >
+            <App />
+          </SWRConfig>
       </MantineProvider>
   </React.StrictMode>
 );

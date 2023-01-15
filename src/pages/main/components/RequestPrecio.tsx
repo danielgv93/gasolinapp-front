@@ -1,18 +1,17 @@
 import {useEffect} from "react";
-import {getPrecioByProvProd} from "../../../domain/services";
 import useStore from "../../../domain/store/useStore";
+import {usePrecio} from "../../../domain/swr";
 
 export const RequestPrecio = () => {
     const {provincia, setPrecio, combustible} = useStore();
-
+    const {precio} = usePrecio(provincia.id, combustible.id);
     useEffect(() => {
-        getPrecioByProvProd(provincia.id, combustible.id).then(res => {
-            if (!res.precio) {
-                return;
-            }
-            setPrecio(res.precio)
-        })
-    }, [provincia.nombre, combustible])
+        if (!precio) {
+            return;
+        }
+        setPrecio(precio.precio)
+
+    }, [precio])
     return null;
 }
 export default RequestPrecio

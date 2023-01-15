@@ -1,5 +1,5 @@
 import {BanknotesIcon} from "@heroicons/react/24/outline";
-import {Card, Divider, HoverCard, Title} from "@mantine/core";
+import {Card, Divider, HoverCard, Text, Title} from "@mantine/core";
 import React from "react";
 import {Container} from "../../components";
 import {GasIcon} from "../../components/icons/GasIcon";
@@ -14,32 +14,38 @@ export const MainLayout = () => {
     return (
         <Container >
             <RequestPrecio />
-            <div className={'flex flex-col min-h-[calc(100%-68px)] gap-20 md:p-20 lg:py-20 lg:px-40 px-10'}>
+            <div className={'flex flex-col gap-20 p-20 pb-32 lg:px-40 px-10'}>
                 <div className={'flex justify-center'}>
                     <Title className={"font-['Montserrat, sans-serif'] tracking-widest"}>GASOLINAPP</Title>
                 </div>
                 <div className={'grid md:grid-cols-2 grid-cols-1 grid-flow-row lg:gap-x-20 gap-6'}>
                     <div className={'md:col-span-2 grid md:grid-cols-2 p-4 rounded-lg bg-white lg:gap-x-20 gap-6 '}>
-                        <HoverCard withArrow position={'top'} >
+                        <HoverCard withArrow closeDelay={0} position={'top'} >
                             <HoverCard.Target>
-                                <div className={'w-full flex items-center justify-center rounded-md shadow hover:bg-blue-50 cursor-pointer transition-all p-6'}>
+                                <div className={'w-full flex items-center justify-center rounded-md hover:bg-blue-50 hover:shadow cursor-pointer transition-all p-6'}>
                                     <GasIcon className={'h-6 w-6 text-gray-600 mr-4'}/>
                                     <span className={'text-2xl transition-all'}>{fixedNumber(precio)} €/L</span>
                                 </div>
                             </HoverCard.Target>
                             <HoverCard.Dropdown>
-                                Precio del combustible
+                                <div className={'md:max-w-xl max-w-xs'}>
+                                    <Text className={'font-bold pl-4'}>Precio del combustible</Text>
+                                    <Text className={'text-sm'}>Este dato esta calculado como la media de los precios del combustible seleccionado de las gasolineras de la provincia seleccionada.</Text>
+                                </div>
                             </HoverCard.Dropdown>
                         </HoverCard>
-                        <HoverCard withArrow position={'top'} >
+                        <HoverCard withArrow closeDelay={0} position={'top'} >
                             <HoverCard.Target>
-                                <div className={'w-full flex items-center justify-center rounded-md shadow hover:bg-blue-50 cursor-pointer transition-all p-6'}>
+                                <div className={'w-full flex items-center justify-center rounded-md hover:bg-blue-50 hover:shadow cursor-pointer transition-all p-6'}>
                                     <BanknotesIcon className={'h-6 w-6 text-gray-600 mr-4'}/>
                                     <span className={'text-2xl transition-all'}>{fixedNumber(precio * kilometros / 100 * consumo)} €</span>
                                 </div>
                             </HoverCard.Target>
                             <HoverCard.Dropdown>
-                                Coste del viaje
+                                <div className={'md:max-w-xl max-w-xs'}>
+                                    <Text className={'font-bold pl-4'}>Coste del viaje</Text>
+                                    <Text className={'text-sm'}>Teniendo en cuenta el coste del combustible, el coste total se calcula como el precio del combustible por los kilometros que se van a recorrer por el consumo del vehiculo.</Text>
+                                </div>
                             </HoverCard.Dropdown>
                         </HoverCard>
                     </div>
