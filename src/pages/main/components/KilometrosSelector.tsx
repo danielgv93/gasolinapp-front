@@ -1,4 +1,4 @@
-import {NumberInput, Slider, Text} from "@mantine/core";
+import {Box, NumberInput, Slider, Text} from "@mantine/core";
 import {useInputState} from "@mantine/hooks";
 import useStore from "../../../domain/store/useStore";
 
@@ -6,7 +6,7 @@ export const KilometrosSelector = () => {
     const {kilometros, setKilometros} = useStore();
     const [sliderPreviewValue, setSliderPreviewValue] = useInputState(kilometros);
     return (
-        <div className={'flex flex-col'}>
+        <Box py={'xl'}>
             <NumberInput
                 label={'Kilometros'}
                 value={kilometros}
@@ -31,7 +31,7 @@ export const KilometrosSelector = () => {
                 onChange={setSliderPreviewValue}
                 onChangeEnd={setKilometros}
                 py={'xl'} />
-        </div>
+        </Box>
 
     )
 }

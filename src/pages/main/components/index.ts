@@ -1,5 +1,5 @@
 export * from './PrivinciaSelector';
 export * from './CombustibleSelector';
-export * from './Precio';
+export * from './RequestPrecio';
 export * from './KilometrosSelector';
 export * from './ConsumoSelector';

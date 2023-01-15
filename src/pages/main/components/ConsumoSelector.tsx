@@ -1,4 +1,4 @@
-import {NumberInput, Slider, Text} from "@mantine/core";
+import {Box, NumberInput, Slider, Text} from "@mantine/core";
 import {useInputState} from "@mantine/hooks";
 import useStore from "../../../domain/store/useStore";
 
@@ -7,7 +7,7 @@ export const ConsumoSelector = () => {
     const [sliderPreviewValue, setSliderPreviewValue] = useInputState(consumo);
 
     return (
-        <div className={'flex flex-col'}>
+        <Box pb={'lg'}>
             <NumberInput
                 label={'Consumo L/100Km'}
                 value={consumo}
@@ -35,7 +35,7 @@ export const ConsumoSelector = () => {
                 onChange={setSliderPreviewValue}
                 onChangeEnd={setConsumo}
                 py={'xl'} />
-        </div>
+        </Box>
     )
 }
 

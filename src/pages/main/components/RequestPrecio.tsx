@@ -2,7 +2,7 @@ import {useEffect} from "react";
 import {getPrecioByProvProd} from "../../../domain/services";
 import useStore from "../../../domain/store/useStore";
 
-export const Precio = () => {
+export const RequestPrecio = () => {
     const {provincia, setPrecio, combustible} = useStore();
 
     useEffect(() => {
@@ -15,4 +15,4 @@ export const Precio = () => {
     }, [provincia.nombre, combustible])
     return null;
 }
-export default Precio
+export default RequestPrecio

@@ -25,6 +25,7 @@ export const PrivinciaSelector = () => {
     <Select
         label="Provincia"
         searchable
+        p={'xl'}
         placeholder="Selecciona una provincia"
         value={provincia.id.toString() ?? ''}
         data={provincias.map(provinciasMap)}
