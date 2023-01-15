@@ -12,7 +12,6 @@ export const ConsumoSelector = () => {
                 label={'Consumo L/100Km'}
                 value={consumo}
                 min={0}
-                max={10}
                 step={0.1}
                 precision={1}
                 stepHoldDelay={500}
