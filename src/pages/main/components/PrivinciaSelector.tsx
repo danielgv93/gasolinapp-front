@@ -14,7 +14,7 @@ export const PrivinciaSelector = () => {
         return (
             <Select
                 label="Provincia"
-                p={'xl'}
+                py={'xl'}
                 placeholder="Selecciona una provincia"
                 data={[]} />);
     }

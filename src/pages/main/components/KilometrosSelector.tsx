@@ -7,7 +7,7 @@ export const KilometrosSelector = () => {
     const {kilometros, setKilometros} = useStore();
     const [sliderPreviewValue, setSliderPreviewValue] = useInputState(kilometros);
     return (
-        <Box py={'xl'}>
+        <Box p={'xl'}>
             <NumberInput
                 label={'Kilometros'}
                 value={kilometros}

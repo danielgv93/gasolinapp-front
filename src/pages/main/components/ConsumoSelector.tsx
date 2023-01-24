@@ -7,7 +7,7 @@ export const ConsumoSelector = () => {
     const [sliderPreviewValue, setSliderPreviewValue] = useInputState(consumo);
 
     return (
-        <Box pb={'lg'}>
+        <Box px={'xl'}>
             <NumberInput
                 label={'Consumo L/100Km'}
                 value={consumo}
