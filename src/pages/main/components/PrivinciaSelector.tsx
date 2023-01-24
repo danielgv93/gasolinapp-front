@@ -22,6 +22,7 @@ export const PrivinciaSelector = () => {
     return (
     <Select
         label="Provincia"
+        error={provincia.id == 0 ? 'Debes seleccionar una provincia' : ''}
         searchable
         p={'xl'}
         placeholder="Selecciona una provincia"

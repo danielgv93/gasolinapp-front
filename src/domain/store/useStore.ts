@@ -1,5 +1,5 @@
 import {create, GetState, SetState} from "zustand";
-import {devtools, persist} from "zustand/middleware";
+import {devtools} from "zustand/middleware";
 import {RootState} from "./RootStore";
 import {
     createCombustible,
@@ -17,8 +17,9 @@ const createRootSlice = (set: SetState<any>, get: GetState<any>) => ({
     ...createConsumo(set, get)
 })
 
-export const useStore = create<RootState>()(devtools(persist(createRootSlice, {
-    name: 'gasolinapp',
-})))
+//export const useStore = create<RootState>()(devtools(persist(createRootSlice, {
+//    name: 'gasolinapp',
+//})))
+export const useStore = create<RootState>()(devtools(createRootSlice))
 export default useStore;
 

@@ -28,7 +28,7 @@ export const KilometrosSelector = () => {
                 color={'green'}
                 className={'w-full'}
                 min={0}
-                max={Math.max(100, (kilometros + 100))}
+                max={Math.max(100, (kilometros > 90 ? kilometros * 2 : kilometros))}
                 value={sliderPreviewValue}
                 onChange={setSliderPreviewValue}
                 onChangeEnd={setKilometros}

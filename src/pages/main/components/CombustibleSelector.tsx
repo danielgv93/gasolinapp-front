@@ -28,6 +28,8 @@ export const CombustibleSelector = () => {
         <Select
             label="Combustible"
             p={'xl'}
+            placeholder="Selecciona un combustible"
+            error={combustible.id == 0 ? 'Debes seleccionar un combustible' : ''}
             value={combustible.id.toString() ?? ''}
             data={combustibles.map(combustiblesMap)}
             onChange={value => selectOnChange(value, combustibles, setCombustible)} />
