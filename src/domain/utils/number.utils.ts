@@ -1,6 +1,6 @@
-export const fixedNumber = (num: number) => {
-    if (isNaN(num) || !num) {
-        return 0;
+export const fixedNumber = (num: number | null): string => {
+    if (num === null || isNaN(num)) {
+        return "--";
     }
     return num.toFixed(2);
 }

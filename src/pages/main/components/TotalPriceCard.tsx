@@ -8,11 +8,14 @@ import {fixedNumber} from "../../../domain/utils";
 export const TotalPriceCard = () => {
     const {precio, kilometros, consumo} = useStore();
 
+    // Calculate total price, ensuring it's null if base 'precio' is null
+    const totalCalculado = precio === null ? null : (precio * kilometros / 100 * consumo);
+
     return (
         <HoverCard content={<TotalPriceContent /> }>
             <div className={'w-full flex items-center justify-center rounded-md hover:bg-blue-50 hover:shadow cursor-pointer transition-all p-6'}>
                 <BanknotesIcon className={'h-6 w-6 text-font mr-4'}/>
-                <Text className={'text-2xl transition-all'}>{fixedNumber(precio * kilometros / 100 * consumo)} €</Text>
+                <Text className={'text-2xl transition-all'}>{fixedNumber(totalCalculado)} €</Text>
             </div>
         </HoverCard>
     )

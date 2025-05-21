@@ -1,15 +1,20 @@
 import React from "react";
 import {Card, Divider, Image, Title} from "@mantine/core";
-import {Container} from "../../components";
+import {Container, GlobalErrorAlert} from "../../components";
 import {Text} from "../../components/Text";
 import {RequestPrecio, KilometrosSelector, CombustibleSelector, PrivinciaSelector, ConsumoSelector} from "./components";
+import { useProvincias } from "../../domain/swr";
 import {PriceCard, PriceContainerMobile, TotalPriceCard} from "./components";
 import {Footer} from "./Footer";
 
 export const MainLayout = () => {
+    const { isError: provinciasError } = useProvincias();
 
     return (
         <Container >
+            {provinciasError && (
+                <GlobalErrorAlert message="Error de conexión: No se pudieron cargar las provincias. Algunas funcionalidades pueden estar limitadas." />
+            )}
             <RequestPrecio />
 
             <div className={'flex flex-col gap-14 md:gap-20 p-26 pt-10 md:p-20 pb-32 lg:px-40 px-10'}>

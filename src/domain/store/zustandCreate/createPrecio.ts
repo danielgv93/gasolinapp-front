@@ -1,13 +1,13 @@
 import StoreSlice from "./storeSlice";
 
 export interface PrecioState {
-    precio: number
-    setPrecio: (combustible: number) => void
+    precio: number | null; // Changed
+    setPrecio: (precio: number | null) => void; // Changed
 }
 
 export const createPrecio: StoreSlice<PrecioState> = (set) => ({
-    precio: 0,
-    setPrecio: (precio: number) => set({precio})
-})
+    precio: null, // Changed
+    setPrecio: (precio: number | null) => set({precio}), // Changed
+});
 
 export default createPrecio;
