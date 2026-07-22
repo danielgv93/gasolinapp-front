@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#123b2b" />
+    <meta
+      name="description"
+      content="Calcula el coste de combustible de tu viaje con precios oficiales de tu provincia o de las estaciones cercanas a tu ruta."
+    />
+    <link rel="icon" href="./public/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIINfQ3ynh6F6YZMZjo5rF+ZA9Z3KukooOs="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Gasolinapp — Calcula el coste de tu viaje</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Gasolinapp, inicio">
+        <span class="brand-mark"><img src="./public/logo.png" alt="" /></span>
+        <span>gasolinapp</span>
+      </a>
+      <a class="source-link" href="https://geoportalgasolineras.es/" target="_blank" rel="noreferrer">
+        <span class="live-dot" aria-hidden="true"></span>
+        Datos oficiales
+      </a>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <p class="eyebrow">Tu viaje, con las cuentas claras</p>
+        <h1 id="hero-title">¿Cuánto te va a costar<br /><em>llegar hasta allí?</em></h1>
+        <p class="hero-copy">
+          Calcula el gasto de combustible con precios oficiales adaptados a tu viaje.
+        </p>
+      </section>
+
+      <section class="calculator" aria-label="Calculadora de combustible">
+        <div class="form-panel">
+          <div class="section-heading">
+            <span>01</span>
+            <div>
+              <h2>Elige tu combustible</h2>
+              <p>Selecciona el tipo de combustible de tu vehículo.</p>
+            </div>
+          </div>
+
+          <fieldset class="field fuel-field">
+            <legend>Combustible</legend>
+            <div class="fuel-options" id="fuel-options">
+              <button class="fuel-option active" type="button" data-product="1" aria-pressed="true">
+                <span>Gasolina</span><strong>95</strong>
+              </button>
+              <button class="fuel-option" type="button" data-product="3" aria-pressed="false">
+                <span>Gasolina</span><strong>98</strong>
+              </button>
+              <button class="fuel-option" type="button" data-product="4" aria-pressed="false">
+                <span>Diésel</span><strong>A</strong>
+              </button>
+            </div>
+          </fieldset>
+
+          <div class="divider"></div>
+
+          <div class="section-heading compact">
+            <span>02</span>
+            <div>
+              <h2>Datos del viaje</h2>
+              <p>Indica la distancia o calcúlala buscando tu ruta.</p>
+            </div>
+          </div>
+
+          <div class="distance-modes" aria-label="Cómo indicar la distancia">
+            <button class="distance-mode active" type="button" data-distance-mode="manual" aria-pressed="true">Introducir km</button>
+            <button class="distance-mode" type="button" data-distance-mode="route" aria-pressed="false">Calcular con mapa</button>
+          </div>
+
+          <div id="manual-distance-panel">
+            <div class="range-field">
+              <div class="range-top">
+                <label for="kilometros">Distancia de ida</label>
+                <div class="number-input"><input id="kilometros" type="number" min="0" max="3000" value="250" /><span>km</span></div>
+              </div>
+              <input id="kilometros-range" type="range" min="0" max="1200" step="10" value="250" />
+              <div class="range-labels"><span>0 km</span><span>1.200 km</span></div>
+            </div>
+          </div>
+
+          <div id="route-distance-panel" class="route-panel" hidden>
+            <div class="place-field">
+              <label for="origin">Origen</label>
+              <div class="place-search">
+                <input id="origin" type="search" placeholder="Ej. Madrid, Atocha" autocomplete="off" aria-autocomplete="list" aria-controls="origin-results" aria-expanded="false" aria-haspopup="listbox" />
+              </div>
+              <div class="place-results" id="origin-results" role="listbox" hidden></div>
+            </div>
+            <div class="place-field">
+              <label for="destination">Destino</label>
+              <div class="place-search">
+                <input id="destination" type="search" placeholder="Ej. Toledo, centro" autocomplete="off" aria-autocomplete="list" aria-controls="destination-results" aria-expanded="false" aria-haspopup="listbox" />
+              </div>
+              <div class="place-results" id="destination-results" role="listbox" hidden></div>
+            </div>
+            <div id="route-map" aria-label="Mapa de la ruta"></div>
+            <p class="route-status" id="route-status">Busca y selecciona un origen y un destino.</p>
+          </div>
+
+          <label class="round-trip">
+            <input id="round-trip" type="checkbox" />
+            <span><strong>Ida y vuelta</strong><small>Calcularemos el doble de la distancia de ida.</small></span>
+          </label>
+
+          <div class="range-field">
+            <div class="range-top">
+              <label for="consumo">Consumo medio</label>
+              <div class="number-input"><input id="consumo" type="number" min="0" max="30" step="0.1" value="6.5" /><span>L/100 km</span></div>
+            </div>
+            <input id="consumo-range" type="range" min="0" max="20" step="0.1" value="6.5" />
+            <div class="range-labels"><span>0 L</span><span>20 L</span></div>
+          </div>
+
+          <div id="price-reference-step">
+            <div class="divider"></div>
+
+            <div class="section-heading compact">
+              <span>03</span>
+              <div>
+                <h2>Precio de referencia</h2>
+                <p>Solo necesitamos una provincia cuando introduces la distancia manualmente.</p>
+              </div>
+            </div>
+
+            <div class="field" id="province-field">
+              <label for="provincia">Provincia</label>
+              <div class="select-wrap">
+                <select id="provincia" name="provincia">
+                  <option value="">Selecciona una provincia</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="result-panel" aria-live="polite">
+          <div class="result-top">
+            <p class="result-label">Coste estimado</p>
+            <span class="result-status idle" id="status"><i></i><span>Elige provincia</span></span>
+          </div>
+
+          <div class="total-price">
+            <span id="total-price">—</span><small>€</small>
+          </div>
+          <p class="result-summary" id="result-summary">Selecciona una provincia para consultar el precio actualizado.</p>
+
+          <div class="receipt">
+            <div><span id="fuel-price-label">Precio medio</span><strong id="fuel-price">— €/L</strong></div>
+            <div><span>Combustible necesario</span><strong id="litres">16,25 L</strong></div>
+            <div><span>Distancia</span><strong id="distance-summary">250 km</strong></div>
+            <div class="receipt-total"><span>Total estimado</span><strong id="total-summary">— €</strong></div>
+          </div>
+
+          <button class="retry-button" id="retry" type="button" hidden>Volver a intentarlo</button>
+          <p class="update-note" id="update-note">El precio se obtiene de la fuente oficial del Ministerio.</p>
+        </aside>
+      </section>
+
+      <section class="how-it-works" aria-labelledby="how-title">
+        <div>
+          <p class="eyebrow">Sin letra pequeña</p>
+          <h2 id="how-title">Una estimación sencilla y útil</h2>
+        </div>
+        <div class="steps">
+          <article><span>1</span><h3>Precio oficial</h3><p>Consultamos los precios publicados por las estaciones de servicio.</p></article>
+          <article><span>2</span><h3>Media relevante</h3><p>Usamos tu provincia o las estaciones cercanas a la ruta calculada.</p></article>
+          <article><span>3</span><h3>Tu consumo</h3><p>Multiplicamos los litros necesarios por el precio medio.</p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand footer-brand" href="#"><span class="brand-mark"><img src="./public/logo.png" alt="" /></span><span>gasolinapp</span></a>
+      <p>Hecho con mimo por <a href="https://github.com/danielgv93" target="_blank" rel="noreferrer">Daniel García Varela</a></p>
+      <p>Los precios son orientativos y pueden variar en cada estación.</p>
+    </footer>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+      defer
+    ></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
