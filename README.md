@@ -2,7 +2,9 @@
 
 Calculadora estática del coste de combustible de un viaje. La aplicación consulta desde el navegador la API pública del Ministerio, normaliza los precios y calcula la media de la provincia seleccionada para una distancia manual, o la media de las estaciones situadas en un corredor de 15 km alrededor de una ruta calculada.
 
-La versión estática está formada por `index.html`, `styles.css`, `app.js` y los recursos gráficos de `public/`. No necesita Node, React, variables de entorno ni un backend propio.
+El selector de vehículos utiliza un catálogo local generado a partir de los datos abiertos de la Agencia Europea de Medio Ambiente (EEA). Incluye 7.079 combinaciones de año, marca, modelo y motorización registradas en España entre 2022 y 2025. El consumo homologado puede editarse y se ajusta de forma orientativa según la velocidad media indicada; en las rutas se propone automáticamente la velocidad media calculada con la distancia y duración de OSRM.
+
+La versión estática está formada por `index.html`, `styles.css`, `app.js` y los recursos de `public/`, incluido `public/eea-vehicles.json`. No necesita Node, React, variables de entorno ni un backend propio.
 
 ## Probar en local
 

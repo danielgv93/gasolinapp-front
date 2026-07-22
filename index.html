@@ -50,13 +50,50 @@
           <div class="section-heading">
             <span>01</span>
             <div>
-              <h2>Elige tu combustible</h2>
-              <p>Selecciona el tipo de combustible de tu vehículo.</p>
+              <h2>Elige tu vehículo</h2>
+              <p>Usaremos su consumo homologado publicado por la Agencia Europea de Medio Ambiente.</p>
             </div>
           </div>
 
+          <div class="vehicle-fields" aria-describedby="vehicle-data-status">
+            <div class="field">
+              <label for="vehicle-year">Año de matriculación</label>
+              <div class="select-wrap">
+                <select id="vehicle-year" name="vehicle-year" disabled>
+                  <option value="">Cargando datos…</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="vehicle-make">Marca</label>
+              <div class="select-wrap">
+                <select id="vehicle-make" name="vehicle-make" disabled>
+                  <option value="">Selecciona una marca</option>
+                </select>
+              </div>
+            </div>
+            <div class="field vehicle-field-wide">
+              <label for="vehicle-model">Modelo</label>
+              <div class="select-wrap">
+                <select id="vehicle-model" name="vehicle-model" disabled>
+                  <option value="">Selecciona un modelo</option>
+                </select>
+              </div>
+            </div>
+            <div class="field vehicle-field-wide">
+              <label for="vehicle-version">Motorización</label>
+              <div class="select-wrap">
+                <select id="vehicle-version" name="vehicle-version" disabled>
+                  <option value="">Selecciona una motorización</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <p class="vehicle-data-status" id="vehicle-data-status">Cargando el catálogo gratuito de la EEA…</p>
+          <a class="vehicle-source" href="https://www.eea.europa.eu/en/datahub/datahubitem-view/fa8b1229-3db6-495d-b18e-9c9b3267c02b" target="_blank" rel="noreferrer">Consultar los datos originales de la EEA</a>
+
           <fieldset class="field fuel-field">
-            <legend>Combustible</legend>
+            <legend>Combustible para el cálculo</legend>
             <div class="fuel-options" id="fuel-options">
               <button class="fuel-option active" type="button" data-product="1" aria-pressed="true">
                 <span>Gasolina</span><strong>95</strong>
@@ -122,12 +159,22 @@
 
           <div class="range-field">
             <div class="range-top">
-              <label for="consumo">Consumo medio</label>
+              <label for="consumo">Consumo homologado</label>
               <div class="number-input"><input id="consumo" type="number" min="0" max="30" step="0.1" value="6.5" /><span>L/100 km</span></div>
             </div>
             <input id="consumo-range" type="range" min="0" max="20" step="0.1" value="6.5" />
             <div class="range-labels"><span>0 L</span><span>20 L</span></div>
           </div>
+
+          <div class="range-field">
+            <div class="range-top">
+              <label for="velocidad">Velocidad media</label>
+              <div class="number-input"><input id="velocidad" type="number" min="20" max="160" step="1" value="100" /><span>km/h</span></div>
+            </div>
+            <input id="velocidad-range" type="range" min="20" max="160" step="1" value="100" />
+            <div class="range-labels"><span>20 km/h</span><span>160 km/h</span></div>
+          </div>
+          <p class="consumption-estimate" id="consumption-estimate">Consumo estimado a 100 km/h: 6,50 L/100 km.</p>
 
           <div id="price-reference-step">
             <div class="divider"></div>
@@ -152,25 +199,28 @@
         </div>
 
         <aside class="result-panel" aria-live="polite">
-          <div class="result-top">
-            <p class="result-label">Coste estimado</p>
-            <span class="result-status idle" id="status"><i></i><span>Elige provincia</span></span>
-          </div>
+          <div class="result-panel-content">
+            <div class="result-top">
+              <p class="result-label">Coste estimado</p>
+              <span class="result-status idle" id="status"><i></i><span>Elige provincia</span></span>
+            </div>
 
-          <div class="total-price">
-            <span id="total-price">—</span><small>€</small>
-          </div>
-          <p class="result-summary" id="result-summary">Selecciona una provincia para consultar el precio actualizado.</p>
+            <div class="total-price">
+              <span id="total-price">—</span><small>€</small>
+            </div>
+            <p class="result-summary" id="result-summary">Selecciona una provincia para consultar el precio actualizado.</p>
 
-          <div class="receipt">
-            <div><span id="fuel-price-label">Precio medio</span><strong id="fuel-price">— €/L</strong></div>
-            <div><span>Combustible necesario</span><strong id="litres">16,25 L</strong></div>
-            <div><span>Distancia</span><strong id="distance-summary">250 km</strong></div>
-            <div class="receipt-total"><span>Total estimado</span><strong id="total-summary">— €</strong></div>
-          </div>
+            <div class="receipt">
+              <div><span id="fuel-price-label">Precio medio</span><strong id="fuel-price">— €/L</strong></div>
+              <div><span>Consumo aplicado</span><strong id="consumption-summary">6,50 L/100 km</strong></div>
+              <div><span>Combustible necesario</span><strong id="litres">16,25 L</strong></div>
+              <div><span>Distancia</span><strong id="distance-summary">250 km</strong></div>
+              <div class="receipt-total"><span>Total estimado</span><strong id="total-summary">— €</strong></div>
+            </div>
 
-          <button class="retry-button" id="retry" type="button" hidden>Volver a intentarlo</button>
-          <p class="update-note" id="update-note">El precio se obtiene de la fuente oficial del Ministerio.</p>
+            <button class="retry-button" id="retry" type="button" hidden>Volver a intentarlo</button>
+            <p class="update-note" id="update-note">El precio se obtiene de la fuente oficial del Ministerio.</p>
+          </div>
         </aside>
       </section>
 
@@ -182,7 +232,7 @@
         <div class="steps">
           <article><span>1</span><h3>Precio oficial</h3><p>Consultamos los precios publicados por las estaciones de servicio.</p></article>
           <article><span>2</span><h3>Media relevante</h3><p>Usamos tu provincia o las estaciones cercanas a la ruta calculada.</p></article>
-          <article><span>3</span><h3>Tu consumo</h3><p>Multiplicamos los litros necesarios por el precio medio.</p></article>
+          <article><span>3</span><h3>Tu vehículo</h3><p>Partimos del consumo EEA y lo ajustamos a la velocidad media indicada.</p></article>
         </div>
       </section>
     </main>

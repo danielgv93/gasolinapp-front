@@ -1,6 +1,7 @@
 const API_URL = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvinciaProducto";
 const ROUTE_API_URL = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProducto";
 const ROUTE_CORRIDOR_KM = 15;
+const VEHICLE_DATA_URL = "./public/eea-vehicles.json";
 
 const provincias = [
   [2,"Albacete"],[3,"Alicante"],[4,"Almería"],[1,"Araba/Álava"],[33,"Asturias"],[5,"Ávila"],
@@ -18,9 +19,10 @@ const provincias = [
 const fuelNames = { "1": "Gasolina 95", "3": "Gasolina 98", "4": "Diésel A" };
 const state = {
   provincia: "", producto: "1", precio: null, controller: null,
-  distanceMode: "manual", routeDistance: null, routeCoordinates: [], places: { origin: null, destination: null },
+  distanceMode: "manual", routeDistance: null, routeDuration: null, routeCoordinates: [], places: { origin: null, destination: null },
   map: null, markers: {}, routeLayer: null, routeController: null,
-  placeSearchControllers: {}, placeSearchTimers: {}, placeResults: {}, activePlaceResult: {}
+  placeSearchControllers: {}, placeSearchTimers: {}, placeResults: {}, activePlaceResult: {},
+  vehicleCatalog: [], vehicleOptions: [], selectedVehicle: null
 };
 
 const elements = {
@@ -30,6 +32,10 @@ const elements = {
   kilometrosRange: document.querySelector("#kilometros-range"),
   consumo: document.querySelector("#consumo"),
   consumoRange: document.querySelector("#consumo-range"),
+  velocidad: document.querySelector("#velocidad"),
+  velocidadRange: document.querySelector("#velocidad-range"),
+  consumptionEstimate: document.querySelector("#consumption-estimate"),
+  consumptionSummary: document.querySelector("#consumption-summary"),
   status: document.querySelector("#status"),
   totalPrice: document.querySelector("#total-price"),
   fuelPrice: document.querySelector("#fuel-price"),
@@ -54,6 +60,11 @@ Object.assign(elements, {
 });
 
 Object.assign(elements, {
+  vehicleYear: document.querySelector("#vehicle-year"),
+  vehicleMake: document.querySelector("#vehicle-make"),
+  vehicleModel: document.querySelector("#vehicle-model"),
+  vehicleVersion: document.querySelector("#vehicle-version"),
+  vehicleDataStatus: document.querySelector("#vehicle-data-status"),
   priceReferenceStep: document.querySelector("#price-reference-step"),
   fuelPriceLabel: document.querySelector("#fuel-price-label")
 });
@@ -63,6 +74,7 @@ const decimal = new Intl.NumberFormat("es-ES", { minimumFractionDigits: 2, maxim
 const distanceNumber = new Intl.NumberFormat("es-ES", { maximumFractionDigits: 2 });
 
 function init() {
+  loadVehicleCatalog();
   provincias.forEach(([id, nombre]) => {
     const option = document.createElement("option");
     option.value = id;
@@ -89,6 +101,11 @@ function init() {
 
   bindRange(elements.kilometros, elements.kilometrosRange);
   bindRange(elements.consumo, elements.consumoRange);
+  bindRange(elements.velocidad, elements.velocidadRange);
+  elements.vehicleYear.addEventListener("change", populateVehicleMakes);
+  elements.vehicleMake.addEventListener("change", populateVehicleModels);
+  elements.vehicleModel.addEventListener("change", populateVehicleVersions);
+  elements.vehicleVersion.addEventListener("change", selectVehicleVersion);
   elements.distanceModes.addEventListener("click", handleDistanceMode);
   elements.roundTrip.addEventListener("change", updateCalculation);
   ["origin", "destination"].forEach((kind) => {
@@ -98,6 +115,7 @@ function init() {
       state.places[kind] = null;
       state.placeResults[kind] = [];
       state.routeDistance = null;
+      state.routeDuration = null;
       state.routeCoordinates = [];
       state.precio = null;
       if (state.markers[kind]) {
@@ -129,6 +147,107 @@ function init() {
   });
   elements.retry.addEventListener("click", requestPrice);
   updateCalculation();
+}
+
+async function loadVehicleCatalog() {
+  try {
+    const response = await fetch(VEHICLE_DATA_URL);
+    if (!response.ok) throw new Error(`Respuesta ${response.status}`);
+    const data = await response.json();
+    state.vehicleCatalog = Array.isArray(data.vehicles) ? data.vehicles : [];
+    if (!state.vehicleCatalog.length) throw new Error("Catálogo vacío");
+
+    const years = [...new Set(state.vehicleCatalog.map((vehicle) => vehicle.y))].sort((a, b) => b - a);
+    setSelectOptions(elements.vehicleYear, years.map((year) => [year, year]), "Selecciona un año");
+    elements.vehicleYear.disabled = false;
+    elements.vehicleYear.value = String(years[0]);
+    elements.vehicleDataStatus.textContent = `${state.vehicleCatalog.length.toLocaleString("es-ES")} motorizaciones registradas en España · Fuente: EEA.`;
+    populateVehicleMakes();
+  } catch (error) {
+    elements.vehicleYear.replaceChildren(new Option("Datos no disponibles", ""));
+    elements.vehicleDataStatus.textContent = "No se ha podido cargar el catálogo EEA. Puedes introducir el consumo manualmente.";
+    elements.vehicleDataStatus.classList.add("error");
+  }
+}
+
+function setSelectOptions(select, options, placeholder) {
+  select.replaceChildren(new Option(placeholder, ""));
+  options.forEach(([value, label]) => select.add(new Option(label, value)));
+}
+
+function populateVehicleMakes() {
+  state.selectedVehicle = null;
+  const year = Number(elements.vehicleYear.value);
+  const makes = [...new Set(state.vehicleCatalog.filter((vehicle) => vehicle.y === year).map((vehicle) => vehicle.b))]
+    .sort((a, b) => a.localeCompare(b, "es"));
+  setSelectOptions(elements.vehicleMake, makes.map((make) => [make, formatVehicleName(make)]), "Selecciona una marca");
+  elements.vehicleMake.disabled = !year;
+  setSelectOptions(elements.vehicleModel, [], "Selecciona un modelo");
+  setSelectOptions(elements.vehicleVersion, [], "Selecciona una motorización");
+  elements.vehicleModel.disabled = true;
+  elements.vehicleVersion.disabled = true;
+}
+
+function populateVehicleModels() {
+  state.selectedVehicle = null;
+  const year = Number(elements.vehicleYear.value);
+  const make = elements.vehicleMake.value;
+  const models = [...new Set(state.vehicleCatalog
+    .filter((vehicle) => vehicle.y === year && vehicle.b === make)
+    .map((vehicle) => vehicle.m))]
+    .sort((a, b) => a.localeCompare(b, "es"));
+  setSelectOptions(elements.vehicleModel, models.map((model) => [model, formatVehicleName(model)]), "Selecciona un modelo");
+  elements.vehicleModel.disabled = !make;
+  setSelectOptions(elements.vehicleVersion, [], "Selecciona una motorización");
+  elements.vehicleVersion.disabled = true;
+}
+
+function populateVehicleVersions() {
+  state.selectedVehicle = null;
+  const year = Number(elements.vehicleYear.value);
+  const make = elements.vehicleMake.value;
+  const model = elements.vehicleModel.value;
+  state.vehicleOptions = state.vehicleCatalog
+    .filter((vehicle) => vehicle.y === year && vehicle.b === make && vehicle.m === model)
+    .sort((a, b) => (a.e || 0) - (b.e || 0) || (a.p || 0) - (b.p || 0));
+  setSelectOptions(elements.vehicleVersion, state.vehicleOptions.map((vehicle, index) => [index, formatVehicleVersion(vehicle)]), "Selecciona una motorización");
+  elements.vehicleVersion.disabled = !model;
+}
+
+function selectVehicleVersion() {
+  const index = Number(elements.vehicleVersion.value);
+  const vehicle = state.vehicleOptions[index];
+  if (!vehicle || elements.vehicleVersion.value === "") return;
+  state.selectedVehicle = vehicle;
+  setRangeValue(elements.consumo, elements.consumoRange, vehicle.c);
+  selectFuelProduct(vehicle.f.startsWith("diesel") ? "4" : "1");
+  const registrations = Number(vehicle.n) || 0;
+  elements.vehicleDataStatus.textContent = `Consumo EEA: ${decimal.format(vehicle.c)} L/100 km${registrations ? ` · ${registrations.toLocaleString("es-ES")} matriculaciones de referencia` : ""}. Puedes modificarlo manualmente.`;
+  updateCalculation();
+}
+
+function formatVehicleName(value) {
+  return value.toLocaleLowerCase("es").replace(/(^|[\s\-/])\p{L}/gu, (letter) => letter.toLocaleUpperCase("es"));
+}
+
+function formatVehicleVersion(vehicle) {
+  const fuel = vehicle.f === "diesel" ? "Diésel" : vehicle.f === "petrol" ? "Gasolina" : vehicle.f.startsWith("diesel") ? "Híbrido diésel" : "Híbrido gasolina";
+  const details = [];
+  if (vehicle.e) details.push(`${(vehicle.e / 1000).toLocaleString("es-ES", { maximumFractionDigits: 1 })} L`);
+  if (vehicle.p) details.push(`${vehicle.p} kW / ${Math.round(vehicle.p * 1.35962)} CV`);
+  details.push(fuel, `${decimal.format(vehicle.c)} L/100 km`);
+  return details.join(" · ");
+}
+
+function selectFuelProduct(product) {
+  const button = elements.fuelOptions.querySelector(`[data-product="${product}"]`);
+  if (button) button.click();
+}
+
+function setRangeValue(numberInput, rangeInput, value) {
+  numberInput.value = value;
+  rangeInput.value = Math.max(Number(rangeInput.min), Math.min(Number(rangeInput.max), value));
+  paintRange(rangeInput);
 }
 
 function handleDistanceMode(event) {
@@ -292,13 +411,17 @@ async function calculateRoute() {
     if (data.code !== "Ok" || !data.routes?.length) throw new Error("Sin ruta");
     const route = data.routes[0];
     state.routeDistance = route.distance / 1000;
+    state.routeDuration = route.duration;
     state.routeCoordinates = route.geometry.coordinates;
+    const averageSpeed = route.duration > 0 ? Math.round(state.routeDistance / (route.duration / 3600)) : null;
+    if (averageSpeed) setRangeValue(elements.velocidad, elements.velocidadRange, Math.max(20, Math.min(160, averageSpeed)));
     drawRoute(route.geometry);
-    setRouteStatus(`Ruta calculada: ${distanceNumber.format(state.routeDistance)} km de ida.`, "success");
+    setRouteStatus(`Ruta calculada: ${distanceNumber.format(state.routeDistance)} km de ida${averageSpeed ? ` · ${averageSpeed} km/h de media estimada` : ""}.`, "success");
     requestPrice();
   } catch (error) {
     if (error.name === "AbortError") return;
     state.routeDistance = null;
+    state.routeDuration = null;
     state.routeCoordinates = [];
     state.precio = null;
     clearRoute();
@@ -474,11 +597,15 @@ function updateCalculation(updateMessage = true) {
     ? Math.max(0, state.routeDistance || 0)
     : Math.max(0, Number(elements.kilometros.value) || 0);
   const kilometres = oneWayKilometres * (elements.roundTrip.checked ? 2 : 1);
-  const consumption = Math.max(0, Number(elements.consumo.value) || 0);
+  const baseConsumption = Math.max(0, Number(elements.consumo.value) || 0);
+  const speed = Math.max(20, Math.min(160, Number(elements.velocidad.value) || 100));
+  const consumption = estimateConsumptionAtSpeed(baseConsumption, speed);
   const litres = kilometres * consumption / 100;
   const total = state.precio === null ? null : litres * state.precio;
 
   elements.litres.textContent = `${decimal.format(litres)} L`;
+  elements.consumptionSummary.textContent = `${decimal.format(consumption)} L/100 km`;
+  elements.consumptionEstimate.textContent = `Consumo estimado a ${Math.round(speed)} km/h: ${decimal.format(consumption)} L/100 km. Ajuste orientativo sobre el dato homologado.`;
   elements.distanceSummary.textContent = `${distanceNumber.format(kilometres)} km`;
   elements.fuelPrice.textContent = state.precio === null ? "— €/L" : `${decimal.format(state.precio)} €/L`;
   elements.totalPrice.textContent = total === null ? "—" : money.format(total);
@@ -495,6 +622,14 @@ function updateCalculation(updateMessage = true) {
   } else if (updateMessage && state.distanceMode === "manual" && !state.provincia) {
     elements.resultSummary.textContent = "Selecciona una provincia para consultar el precio actualizado.";
   }
+}
+
+function estimateConsumptionAtSpeed(baseConsumption, speed) {
+  const optimalSpeed = 70;
+  const factor = speed <= optimalSpeed
+    ? 0.9 + 0.6 * ((optimalSpeed - speed) / optimalSpeed) ** 2
+    : 0.9 + 0.55 * ((speed - optimalSpeed) / optimalSpeed) ** 2;
+  return baseConsumption * factor;
 }
 
 init();
